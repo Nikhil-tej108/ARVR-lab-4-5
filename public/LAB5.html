@@ -61,6 +61,21 @@
            material="color: #FF0000"
            click-scale-toggle>
     </a-box>
+    <a-cone position="0 2.5 -3"
+            radius-bottom="0.5"
+            radius-top="0.1"
+            height="1.5"
+            material="color: #FFFF00">
+    </a-cone>
+    <a-sphere position="1 2 3"
+              radius="0.5"
+              material="color: #00FFFF"
+              animation="property: position;
+                         to: 1.8 3 -3;
+                         dir: alternate;
+                         dur: 1500;
+                         loop: true"> 
+    </a-sphere>
 
     <!-- Cylinder: hover color change and reset -->
     <a-cylinder class="interactive"
