@@ -1,53 +1,81 @@
-<!doctype html>
+LAB7
+<!DOCTYPE html>
 <html>
 <head>
-<title>A-Frame Geolocation</title>
+  <title>Lab 7 - A-Frame Geolocation (Updated Shapes)</title>
 
-<script src="/aframe.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-function showShapes(position)
- {
-var currentLatitude = position.coords.latitude;
-var currentLongitude = position.coords.longitude;
-document.getElementById('currentLocation').innerHTML=`Latitude:${currentLatitude}<br>Longitude:${currentLongitude}`;
-console.log("Latitude: " + currentLatitude);
-console.log("Longitude: " + currentLongitude);
-
-var locations = [
-{ id: "box", lat:12.9564672,lon:77.6208384, threshold: 0.025 },
-{ id: "cone", lat: 12.90509057, lon: 77.55971556, threshold: 0.025 },
-{ id: "sphere", lat: 12.9564672,lon: 77.594624,threshold: 0.025}
-];
-locations.forEach(location => {
-var shape = document.querySelector(`#${location.id}`);
-if (shape && Math.abs(currentLatitude - location.lat) < location.threshold &&
-Math.abs(currentLongitude - location.lon) < location.threshold) {
-shape.setAttribute('visible', true);
-}
-});
-}
-function locationError(error) {
-console.error("Error getting location: ", error);
-document.getElementById('currentLocation').innerHTML =
-`Error getting location: ${error.message}`;
-}
-function getLocation() {
-if (navigator.geolocation) {
-navigator.geolocation.getCurrentPosition(showShapes, locationError, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-} else {
-document.getElementById('currentLocation').innerHTML =
-"Geolocation is not supported by this browser.";
-}
-}
-getLocation();
-});</script>
+  <!-- A-Frame CDN -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 </head>
-<body><h3 id="currentLocation">Fetching location...</h3>
-<a-scene><a-box id="box" position="0 0.5 -3" rotation="0 45 0" color="red" visible="false"></a-box>
-<a-cone id="cone" position="2 0.5 -3" radius="0.5" height="1.5" color="blue" visible="false"></a-cone>
-<a-sphere id="sphere" position="-2 0.75 -3" radius="0.75" color="green" visible="false"></a-sphere>
-<a-camera gps-camera rotation-reader></a-camera>
+
+<body>
+<h3 id="location">Fetching location...</h3>
+
+<a-scene>
+  <!-- NEW 3D Shapes -->
+
+  <!-- Cone -->
+  <a-cone id="cone"
+          position="0 0.75 -3"
+          radius-bottom="0.7"
+          height="1.5"
+          color="orange"
+          visible="false">
+  </a-cone>
+
+  <!-- Torus -->
+  <a-torus id="torus"
+           position="2 1 -3"
+           radius="0.6"
+           radius-tubular="0.15"
+           color="green"
+           visible="false">
+  </a-torus>
+
+  <!-- Octahedron -->
+  <a-octahedron id="octahedron"
+                position="-2 1 -3"
+                radius="0.9"
+                color="red"
+                visible="false">
+  </a-octahedron>
+
+  <a-camera></a-camera>
 </a-scene>
+
+<script>
+const locations = [
+  { id: "cone", lat: 12.9564672, lon: 77.6208384 },
+  { id: "torus", lat: 12.90509057, lon: 77.55971556 },
+  { id: "octahedron", lat: 12.9564672, lon: 77.594624 }
+];
+
+// Increased threshold for lab demo
+const THRESHOLD = 0.05;
+
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    document.getElementById("location").innerText =
+      `Latitude: ${lat} | Longitude: ${lon}`;
+
+    locations.forEach(loc => {
+      if (Math.abs(lat - loc.lat) < THRESHOLD &&
+          Math.abs(lon - loc.lon) < THRESHOLD) {
+        document.getElementById(loc.id)
+          .setAttribute("visible", true);
+      }
+    });
+  },
+  (error) => {
+    document.getElementById("location").innerText =
+      "Location error: " + error.message;
+  },
+  { enableHighAccuracy: true }
+);
+</script>
+
 </body>
 </html>
